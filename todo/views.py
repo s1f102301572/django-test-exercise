@@ -44,22 +44,7 @@ def update(request, task_id):
     if request.method == 'POST':
         task.title = request.POST['title']
         task.due_at = make_aware(parse_datetime(request.POST['due_at']))
-        task.save()
-        return redirect(detail, task_id)
-    
-    context = {
-        'task': task
-    }
-    return render(request, "todo/edit.html", context)
-
-            raise Http404("Task does not exist")
-    if request.method == 'POST':
-        task.title = request.POST['title']
-        task.note = request.POST['note']
-        task.due_at = make_aware(parse_datetime(request.POST['due_at']))
-        task.save()
-        return redirect(detail, task_id)
-        
+        task.save()        
 
 def close(request, task_id):
     try:
