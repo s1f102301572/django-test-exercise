@@ -107,3 +107,9 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_index_post(self):
+        client = Client()
+        data = {'title': 'Test Task', 'note': 'Test Note', 'due_at': '2023-06-30 23:59:59'}
+        response = client.post('/', data)
+        self.assertEqual(response.status_code, 200)

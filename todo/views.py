@@ -72,3 +72,15 @@ def delete(request, task_id):
     task.delete()
     return redirect(index)
 
+def index(request):
+    if request.method == 'POST':
+        task = Task(title=request.POST['title'], note=request.POST['note'],
+                    due_at=make_aware(parse_datetime(request.POST['due_at'])))
+        task.save()
+        raise Http404("Task does not exist")
+    if request.method == 'POST':
+        task.title = request.POST['title']
+        task.note = request.POST['note']
+        task.due_at = make_aware(parse_datetime(request.POST['due_at']))
+        task.save()
+        return redirect(detail, task_id) 
