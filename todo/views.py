@@ -83,4 +83,4 @@ def index(request):
         task.note = request.POST['note']
         task.due_at = make_aware(parse_datetime(request.POST['due_at']))
         task.save()
-        return redirect(detail, task_id) 
+        return redirect(detail, task_id)
