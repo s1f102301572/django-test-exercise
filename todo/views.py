@@ -1,10 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
 from todo.models import Task
 from django.shortcuts import redirect
-
 
 def index(request):
     if request.method == 'POST':
@@ -83,4 +82,4 @@ def index(request):
         task.note = request.POST['note']
         task.due_at = make_aware(parse_datetime(request.POST['due_at']))
         task.save()
-        return redirect(detail, task_id)
+        return redirect(detail) 
