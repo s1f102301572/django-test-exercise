@@ -6,9 +6,11 @@
     <title>To Do Application</title>
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
+    <link rel="stylesheet" type="text/css" href="CSS/detail.css">
   </head>
 
   <body>
+    <div class="background-add">
     <h1>{{ task.title }}</h1>
     <ul>
       <li>Posted at: {{ task.posted_at }}</li>
@@ -29,6 +31,7 @@
       | <a href="{% url 'close' task.id %}">Close</a>
 
 
+    </div>
     </div>
   </body>
 
