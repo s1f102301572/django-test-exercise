@@ -1,0 +1,8 @@
+h1 {
+    color:#7fffd4;
+}
+
+div.background-add {
+    background-image:url("../img/sky_00142.jpg");
+    background-size:  cover;  
+}
