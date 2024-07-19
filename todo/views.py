@@ -8,9 +8,10 @@ from django.shortcuts import redirect
 
 def index(request):
     if request.method == 'POST':
-        task = Task(title=request.POST['title'],
+        task = Task(title=request.POST['title'], note = request.POST['note'],
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
         task.save()
+    
     if request.GET.get('order') == 'due':
         tasks = Task.objects.order_by('due_at')
     else:
@@ -49,9 +50,6 @@ def detail(request, task_id):
     }
     return render(request, 'todo/detail.html', context)
 
-
-
-
 def update(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
@@ -60,6 +58,7 @@ def update(request, task_id):
     
     if request.method == 'POST':
         task.title = request.POST['title']
+        task.note = request.POST['note']
         task.due_at = make_aware(parse_datetime(request.POST['due_at']))
         task.save()
         return redirect(detail, task_id)
@@ -69,7 +68,6 @@ def update(request, task_id):
     }
     return render(request, "todo/edit.html", context)
         
-
 def close(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
