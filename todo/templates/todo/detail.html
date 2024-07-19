@@ -6,9 +6,11 @@
     <title>To Do Application</title>
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
+    <link href="{% static 'todo/CSS/detail.css' %}" rel="stylesheet">
   </head>
 
   <body>
+    <div class="background-add">
     <h1>{{ task.title }}</h1>
     <ul>
       {% if task.note %}
@@ -34,6 +36,7 @@
       | <a href="{% url 'close' task.id %}">Close</a>
 
 
+    </div>
     </div>
   </body>
 
