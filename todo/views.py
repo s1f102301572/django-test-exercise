@@ -15,7 +15,7 @@ def index(request):
         task.save()
         return redirect('detail', task_id=task.id)
 
-    tasks = Task.objects.all().order_by('due_at')
+    tasks = Task.objects.all().order_by('due_at') 
     return render(request, 'todo/index.html', {'tasks': tasks})
 
 def detail(request, task_id):

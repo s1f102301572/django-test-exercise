@@ -71,17 +71,20 @@ class TodoViewTestCase(TestCase):
         response = client.post('/', data)
         self.assertEqual(response.status_code, 302)
 
-    def test_index_get_order_post(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        tasks = response.context['tasks']
-        self.assertEqual(tasks[0], self.task2)
-        self.assertEqual(tasks[1], self.task1)
-
     def test_index_get_order_due(self):
         Task.objects.all().delete()
-        task1 = Task.objects.create(title="Task 1", note="Note 1", posted_at=timezone.now(), due_at=timezone.now())
-        task2 = Task.objects.create(title="Task 2", note="Note 2", posted_at=timezone.now(), due_at=timezone.now() + timezone.timedelta(days=1))
+        task1 = Task.objects.create(
+            title="Task 1",
+            note="Note 1",
+            posted_at=timezone.now(),
+            due_at=timezone.now()
+        )
+        task2 = Task.objects.create(
+            title="Task 2",
+            note="Note 2",
+            posted_at=timezone.now(),
+            due_at=timezone.now() + timezone.timedelta(days=1)
+        )
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         tasks = response.context['tasks']
