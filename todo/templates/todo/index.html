@@ -57,6 +57,12 @@
       </ul>
     </div>
     {% endfor %}
+    <h1>Task List</h1>
+    <ul>
+        {% for task in tasks %}
+            <li><a href="{% url 'detail' task.id %}">{{ task.title }}</a></li>
+        {% endfor %}
+    </ul>
   </body>
 
 </html>

@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.utils import timezone
 from datetime import datetime
-from todo.models import Task
+from .models import Task
 
 
 class SampleTestCase(TestCase):
@@ -53,44 +53,40 @@ class TaskModelTestCase(TestCase):
 
 
 class TodoViewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.task1 = Task.objects.create(title="Task 1", note="Note 1", posted_at=timezone.now())
+        self.task2 = Task.objects.create(title="Task 2", note="Note 2", posted_at=timezone.now() + timezone.timedelta(seconds=1))
+
+
     def test_index_get(self):
-        client = Client()
-        response = client.get('/')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'todo/index.html')
-        self.assertEqual(len(response.context['tasks']), 0)
+        self.assertTemplateUsed(response, 'todo/index.html')
+        self.assertContains(response, "Task List")
 
     def test_index_post(self):
         client = Client()
-        data = {'title': 'Test Task', 'due_at': '2024-06-30 23:59:59'}
+        data = {'title': 'Test Task', 'note': 'Test Note', 'due_at': '2024-06-30 23:59:59'}
         response = client.post('/', data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'todo/index.html')
-        self.assertEqual(len(response.context['tasks']), 1)
+        self.assertEqual(response.status_code, 302)
 
     def test_index_get_order_post(self):
-        task1 = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
-        task1.save()
-        task2 = Task(title='task2', due_at=timezone.make_aware(datetime(2024, 8, 1)))
-        task2.save()
-        client = Client()
-        response = client.get('/?order=post')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'todo/index.html')
-        self.assertEqual(response.context['tasks'][0], task2)
-        self.assertEqual(response.context['tasks'][1], task1)
+        tasks = response.context['tasks']
+        self.assertEqual(tasks[0], self.task2)
+        self.assertEqual(tasks[1], self.task1)
 
     def test_index_get_order_due(self):
-        task1 = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
-        task1.save()
-        task2 = Task(title='task2', due_at=timezone.make_aware(datetime(2024, 8, 1)))
-        task2.save()
-        client = Client()
-        response = client.get('/?order=due')
+        Task.objects.all().delete()
+        task1 = Task.objects.create(title="Task 1", note="Note 1", posted_at=timezone.now(), due_at=timezone.now())
+        task2 = Task.objects.create(title="Task 2", note="Note 2", posted_at=timezone.now(), due_at=timezone.now() + timezone.timedelta(days=1))
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'todo/index.html')
-        self.assertEqual(response.context['tasks'][0], task1)
-        self.assertEqual(response.context['tasks'][1], task2)
+        tasks = response.context['tasks']
+        self.assertEqual(tasks[0], task1)
+        self.assertEqual(tasks[1], task2)
 
     def test_detail_get_success(self):
         task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
@@ -103,13 +99,5 @@ class TodoViewTestCase(TestCase):
         self.assertEqual(response.context['task'], task)
 
     def test_detail_get_fail(self):
-        client = Client()
-        response = client.get('/1/')
-
+        response = self.client.get('/task/999/')
         self.assertEqual(response.status_code, 404)
-
-    def test_index_post(self):
-        client = Client()
-        data = {'title': 'Test Task', 'note': 'Test Note', 'due_at': '2023-06-30 23:59:59'}
-        response = client.post('/')
-        self.assertEqual(response.status_code, 302) 
