@@ -77,18 +77,18 @@ class TodoViewTestCase(TestCase):
             title="Task 1",
             note="Note 1",
             posted_at=timezone.now(),
-            due_at=timezone.now()
+            due_at=timezone.now() 
         )
         task2 = Task.objects.create(
             title="Task 2",
             note="Note 2",
             posted_at=timezone.now(),
-            due_at=timezone.now() + timezone.timedelta(days=1)
+            due_at=timezone.now() + timezone.timedelta(days=1)  
         )
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         tasks = response.context['tasks']
-        self.assertEqual(tasks[0], task1)
+        self.assertEqual(tasks[0], task1) 
         self.assertEqual(tasks[1], task2)
 
     def test_detail_get_success(self):
