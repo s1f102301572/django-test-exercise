@@ -18,6 +18,23 @@ def index(request):
     tasks = Task.objects.all().order_by('due_at') 
     return render(request, 'todo/index.html', {'tasks': tasks})
 
+def index2(request):
+    if request.method == 'POST':
+        task = Task(title=request.POST['title'],
+                    due_at=make_aware(parse_datetime(request.POST['due_at'])))
+        task.save()
+
+    if request.GET.get('order') == 'due':
+        tasks = Task.objects.order_by('due_at')
+    else:
+        tasks = Task.objects.order_by('-posted_at')
+
+    context = {
+        'tasks': tasks
+    }
+    return render(request, 'todo/index2.html', context)
+
+
 def detail(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
